@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, IO, Iterable, Literal, Protocol, TypeVar, runtime_checkable, Tuple
+from typing import TYPE_CHECKING, Any, Callable, ClassVar, IO, Iterable, Literal, Protocol, TypeVar, runtime_checkable
 
 import configparser
 import numpy as np
@@ -745,7 +745,7 @@ def preprocess_weights(
             kfactor = int(cf.get(sec, 'kfactor'))
             simd_n_in = int(cf.get(sec, 'simd_n_in'))
             simd_n_out = int(cf.get(sec, 'simd_n_out'))
-            break    
+            break
 
     M = M * bits
     ngroups_per_elem = 8 // g
@@ -1301,7 +1301,7 @@ class OutputFile:
             logger.info(
                 f"[{i + 1:{padi}d}/{len(model)}] Writing tensor {name:38s} | size {size:16} | type {lazy_tensor.data_type.name:4} | T+{int(elapsed):4}"
             )
-            
+        
             if i2_scale is not None:
                 i2_scale = np.tile(i2_scale, 8)
                 ndarray = preprocess_weights(ndarray)
@@ -1439,7 +1439,7 @@ def convert_model_names(model: LazyModel, params: Params, skip_unknown: bool) ->
             del tmp[f"model.layers.{i}.self_attn.W_pack.weight"]
         else:
             break
-    
+
     # check if is bitnet
     if ARCH == 33:
         del tmp['output.weight']
