@@ -726,12 +726,16 @@ def preprocess_weights(
     w: np.ndarray,
     bits = 2,
     g    = 4,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> np.ndarray:
     M, K = w.shape
 
     cf=configparser.ConfigParser()
     cf.read("./build/kcfg.ini")
     secs=cf.sections()
+    bm: int = 1
+    kfactor: int = 1
+    simd_n_in: int = 1
+    simd_n_out: int = 1
     for sec in secs:
         sec_splits = str(sec).split('_')
         if sec_splits[-4] == "m" + str(M*2) and sec_splits[-3] == "k" + str(K):
@@ -749,7 +753,7 @@ def preprocess_weights(
     # print(w)
     # (M // bits, K, bits) -> (M // bits, bits, K) -> (M // bits, bits, K) -> (M // bits, bits, K // g, g)
     w = w.transpose(0, 2, 1).reshape(M // bits, bits, K // g, g)
-    w = sum([(w[:, :, :, ig] << ig) for ig in range(g)])
+    w = np.add.reduce([w[:, :, :, ig] << ig for ig in range(g)])
     # print(w)
     # 0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23, 8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31
     # for bits=3
@@ -760,7 +764,7 @@ def preprocess_weights(
     w = w.reshape(M // mgroup, ngroups_per_elem, simd_n_in, K // g).transpose(0, 2, 1, 3)
     #             0        1             2             3                 4                  5
     w = w.reshape(M // bm, bm // mgroup, simd_n_in, ngroups_per_elem, K // g // kfactor, kfactor).transpose(0, 4, 1, 5, 2, 3)
-    w = sum([(w[:, :, :, :, :, ng] << (ng * g)) for ng in range(ngroups_per_elem)])
+    w = np.add.reduce([w[:, :, :, :, :, ng] << (ng * g) for ng in range(ngroups_per_elem)])
     w = w.reshape(M // bm, K // g // kfactor, bm // mgroup, kfactor, simd_n_in)
     # input size of current TVM API
     w = w.reshape(M // bm, K // g, bm // ngroups_per_elem)
