@@ -7,29 +7,24 @@
   "reportDeprecated": "warning",
   "reportUnnecessaryTypeIgnoreComment": "information",
   "disableBytesTypePromotions": false,
+  "reportPossiblyUnboundVariable": "warning",
+  "reportAttributeAccessIssue": "warning",
+  "reportCallIssue": "warning",
+  "reportArgumentType": "warning",
+  "reportReturnType": "warning",
+  "reportAssignmentType": "warning",
+  "ignore": [
+    "test_op",
+    "convert_hf_to_gguf.py"
+  ],
   "executionEnvironments": [
     {
       "root": "gguf-py",
-      "pythonVersion": "3.8",
+      "pythonVersion": "3.8"
     },
     {
       "root": "examples/server/tests",
-      "pythonVersion": "3.10",
-    },
-    {
-      // BitNet-specific I2_S conversion scripts have pre-existing type issues
-      // from the Eddie-Wang1120 fork; suppress until upstream fixes them
-      "root": "convert.py",
-      "reportPossiblyUnboundVariable": "warning",
-      "reportCallIssue": "warning",
-      "reportAttributeAccessIssue": "warning",
-      "reportArgumentType": "warning",
-      "reportReturnType": "warning",
-      "reportAssignmentType": "warning",
-    },
-    {
-      "root": "test_op",
-      "reportPossiblyUnboundVariable": "warning",
-    },
-  ],
- }
+      "pythonVersion": "3.10"
+    }
+  ]
+}

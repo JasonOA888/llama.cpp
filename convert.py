@@ -1301,7 +1301,7 @@ class OutputFile:
             logger.info(
                 f"[{i + 1:{padi}d}/{len(model)}] Writing tensor {name:38s} | size {size:16} | type {lazy_tensor.data_type.name:4} | T+{int(elapsed):4}"
             )
-        
+    
             if i2_scale is not None:
                 i2_scale = np.tile(i2_scale, 8)
                 ndarray = preprocess_weights(ndarray)
