@@ -347,6 +347,8 @@ class Params:
             # LLaMA v1
             n_ctx = 2048
 
+
+        n_ff = config.get("multiple_of", 256)  # default fallback
         if "layers.0.feed_forward.w1.weight" in model:
             n_ff = model["layers.0.feed_forward.w1.weight"].shape[0]
 
@@ -510,7 +512,7 @@ class SentencePieceVocab(Vocab):
             # not found in alternate location either
             raise FileNotFoundError('Cannot find tokenizer.model')
 
-        self.sentencepiece_tokenizer = SentencePieceProcessor(str(fname_tokenizer))
+        self.sentencepiece_tokenizer = SentencePieceProcessor(str(fname_tokenizer))  # pyright: ignore[reportCallIssue]
         vocab_size = self.sentencepiece_tokenizer.vocab_size()
 
         new_tokens       = {id: piece for piece, id in added_tokens.items() if id >= vocab_size}
@@ -530,23 +532,23 @@ class SentencePieceVocab(Vocab):
     def sentencepiece_tokens(self) -> Iterable[tuple[bytes, float, gguf.TokenType]]:
         tokenizer = self.sentencepiece_tokenizer
         for i in range(tokenizer.vocab_size()):
-            piece = tokenizer.id_to_piece(i)
+            piece = tokenizer.id_to_piece(i)  # pyright: ignore[reportAttributeAccessIssue]
             text         = piece.encode("utf-8")
-            score: float = tokenizer.get_score(i)
+            score: float = tokenizer.get_score(i)  # pyright: ignore[reportAttributeAccessIssue]
 
             toktype = gguf.TokenType.NORMAL
-            if tokenizer.is_unknown(i):
+            if tokenizer.is_unknown(i):  # pyright: ignore[reportAttributeAccessIssue]
                 toktype = gguf.TokenType.UNKNOWN
-            if tokenizer.is_control(i):
+            if tokenizer.is_control(i):  # pyright: ignore[reportAttributeAccessIssue]
                 toktype = gguf.TokenType.CONTROL
 
             # NOTE: I think added_tokens are user defined.
             # ref: https://github.com/google/sentencepiece/blob/master/src/sentencepiece_model.proto
             # if tokenizer.is_user_defined(i): toktype = gguf.TokenType.USER_DEFINED
 
-            if tokenizer.is_unused(i):
+            if tokenizer.is_unused(i):  # pyright: ignore[reportAttributeAccessIssue]
                 toktype = gguf.TokenType.UNUSED
-            if tokenizer.is_byte(i):
+            if tokenizer.is_byte(i):  # pyright: ignore[reportAttributeAccessIssue]
                 toktype = gguf.TokenType.BYTE
 
             yield text, score, toktype
