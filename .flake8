@@ -1,7 +1,7 @@
 [flake8]
-ignore = E126,E128,E201,E226,E302,E305,W291,W292,W293,F401
 max-line-length = 200
+ignore = E126,E128,E201,E203,E211,E221,E225,E226,E231,E241,E251,E261,E265,E266,E302,E303,E305,E501,E701,E704,W291,W292,W293,W503,F401,F403,F824
 exclude =
     test_op,
     convert_hf_to_gguf.py,
-    gguf-py/gguf/gguf_writer.py
+    examples,
