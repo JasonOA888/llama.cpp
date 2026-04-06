@@ -80,6 +80,7 @@ void dequantize_row_tq1_0(const block_tq1_0 * GGML_RESTRICT x, float * GGML_REST
 void dequantize_row_tq2_0(const block_tq2_0 * GGML_RESTRICT x, float * GGML_RESTRICT y, int64_t k);
 
 void dequantize_row_i2_s(const uint8_t * x, float * y, int64_t n, const float i2_scale);
+void dequantize_row_i2_s_wrapper(const void * GGML_RESTRICT x, float * GGML_RESTRICT y, int64_t k);
 
 void dequantize_row_iq2_xxs(const block_iq2_xxs * GGML_RESTRICT x, float * GGML_RESTRICT y, int64_t k);
 void dequantize_row_iq2_xs (const block_iq2_xs  * GGML_RESTRICT x, float * GGML_RESTRICT y, int64_t k);

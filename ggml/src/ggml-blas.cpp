@@ -424,7 +424,7 @@ static bool ggml_backend_blas_device_supports_op(ggml_backend_dev_t dev, const s
                    ggml_is_contiguous(src1) &&
                    src1->type == GGML_TYPE_F32 &&
                    (ne0 >= min_batch && ne1 >= min_batch && ne10 >= min_batch) &&
-                   (src0->type == GGML_TYPE_F32 || ggml_get_type_traits(src0->type)->to_float != NULL);
+                   (src0->type == GGML_TYPE_F32 || (ggml_get_type_traits(src0->type)->to_float != NULL && src0->type != GGML_TYPE_I2_S));
         }
 
         case GGML_OP_OUT_PROD:
@@ -434,7 +434,7 @@ static bool ggml_backend_blas_device_supports_op(ggml_backend_dev_t dev, const s
                    ggml_is_matrix(src1) &&
                    ggml_is_contiguous(src0) &&
                    (ggml_is_contiguous(src1) || ggml_is_transposed(src1)) &&
-                   (src0->type == GGML_TYPE_F32 || ggml_get_type_traits(src0->type)->to_float != NULL);
+                   (src0->type == GGML_TYPE_F32 || (ggml_get_type_traits(src0->type)->to_float != NULL && src0->type != GGML_TYPE_I2_S));
 
         default:
             return false;
