@@ -162,6 +162,7 @@ BY2 = 32
 bm2 = 32
 by2 = 4
 
+two_weight = None
 if (weight.shape[1] % BY3 != 0):
     slice_k_idx = weight.shape[1] - weight.shape[1] % BY3
     slice_weights = np.split(weight, [slice_k_idx], axis=1)
