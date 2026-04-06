@@ -787,7 +787,7 @@ def transform_to_i2(x : NDArray):
     return ans, scale
 
 class UnquantizedTensor(Tensor):
-    def __init__(self, ndarray: NDArray, i2_scale: NDArray = None):
+    def __init__(self, ndarray: NDArray, i2_scale: NDArray | None = None):
         assert isinstance(ndarray, np.ndarray)
         self.ndarray = ndarray
         self.data_type = NUMPY_TYPE_TO_DATA_TYPE[ndarray.dtype]
@@ -926,7 +926,7 @@ def merge_multifile_models(models_plus: list[ModelPlus]) -> ModelPlus:
     else:
         model = merge_sharded([mp.model for mp in models_plus])
 
-    return ModelPlus(model, paths, format, vocab)  # pytype: disable=wrong-arg-types
+    return ModelPlus(model, paths, format, vocab)  # type: ignore[arg-type]  # pytype: disable=wrong-arg-types
 
 
 def permute_lazy(lazy_tensor: LazyTensor, n_head: int, n_head_kv: int) -> LazyTensor:
@@ -1332,13 +1332,13 @@ class OutputFile:
         of.close()
 
     @staticmethod
-    def do_item(item: tuple[str, LazyTensor]) -> tuple[DataType, NDArray]:
+    def do_item(item: tuple[str, LazyTensor]) -> tuple[DataType, NDArray, NDArray | None]:
         name, lazy_tensor = item
         tensor = lazy_tensor.load().to_ggml()
         return (lazy_tensor.data_type, tensor.ndarray, tensor.i2_scale)
 
     @staticmethod
-    def maybe_do_quantize(item: tuple[DataType, NDArray]) -> NDArray:
+    def maybe_do_quantize(item: tuple[DataType, NDArray, NDArray | None]) -> tuple[NDArray, NDArray | None]:
         dt, arr, i2_scale = item
         if not isinstance(dt, QuantizedDataType):
             return arr, i2_scale
